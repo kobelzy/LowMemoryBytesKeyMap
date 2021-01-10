@@ -1,7 +1,6 @@
 package org.lzy;
 
 import com.carrotsearch.sizeof.RamUsageEstimator;
-import org.lzy.map.KVSortByteArray;
 import org.lzy.map.KVSortObjectArray;
 import org.lzy.map.BytesToLongMap;
 
@@ -14,11 +13,11 @@ import java.util.*;
 
 public class Test {
     static String basePath = "D:\\WorkSpace\\Git\\LowMemoryBytesKeyMap\\src\\main\\resources\\data\\";
-        static String filePath = basePath + "sid_big.csv";
-//    static String filePath = basePath + "sid.csv";
+//        static String filePath = basePath + "sid_big.csv";
+    static String filePath = basePath + "sid_sample.csv";
 
     public static void main(String[] args) {
-        List<Entry> list = readFile();
+        List<Entry> list = readFile(filePath);
         /**
          * 1 HashMap 存储
          * 200w 加载时间：0.802s，size：441.4 MB,对数时间：3.257s
@@ -64,7 +63,7 @@ public class Test {
                 count++;
             }
             System.out.println(("对数时间：" + (System.currentTimeMillis() - start) / 1000.0 + "s"));
-
+            System.out.println(bulk.get("Q中文HBGIF9BghLCGR"));
             System.out.println("count:" + count + ".error:" + error);
 
         }
@@ -148,7 +147,7 @@ public class Test {
         System.out.println(("对数时间：" + (System.currentTimeMillis() - start) / 1000.0 + "s"));
     }
 
-    public static List<Entry> readFile() {
+    public static List<Entry> readFile(String filePath) {
 
         File file = new File(filePath);
         List<Entry> list = new LinkedList<>();

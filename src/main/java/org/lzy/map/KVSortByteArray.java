@@ -51,10 +51,9 @@ public class KVSortByteArray {
      * @param valueBytes
      */
      public void add(byte[] keyBytes, byte[] valueBytes) {
-        assert keyBytes.length==K_WIDTH : "key length must ="+K_WIDTH+", but new key length ="+keyBytes.length;
-        assert valueBytes.length==K_WIDTH : "value length must ="+K_WIDTH+", but new value length ="+valueBytes.length;
-
-        if (count == capacity) growArray(); //长度不足以存放当前数据，则进行数组扩充
+         if(keyBytes.length!=K_WIDTH) throw new IllegalStateException("key length must ="+K_WIDTH+", but new key length ="+keyBytes.length);
+         if(valueBytes.length!=V_WIDTH) throw new IllegalStateException("value length must ="+V_WIDTH+", but new value length ="+valueBytes.length);
+         if (count == capacity) growArray(); //长度不足以存放当前数据，则进行数组扩充
         System.arraycopy(keyBytes, 0, data, getKeyStartPosition(count), K_WIDTH);
         System.arraycopy(valueBytes, 0, data, getValueStartPosition(count), V_WIDTH);
 
@@ -79,16 +78,7 @@ public class KVSortByteArray {
         return this.count;
     }
 
-    /**
-     * 根据字符串查询long值，非标准查询方法
-     * 直接读取data[]生成long值，不需要从源数组中复制子byte[]
-     * @param key
-     * @return
-     */
-    public long getLong(final String key) {
-        int valuePos = get(key.getBytes());
-        return valuePos == -1 ? -1L : ByteUtils.BytesToLong(data, valuePos);
-    }
+
 
     /**
      * 根据字符串查询bye[]数据,非标准查询方法
@@ -101,6 +91,19 @@ public class KVSortByteArray {
         return valuePos== -1 ? null :Arrays.copyOfRange(data, valuePos, valuePos + V_WIDTH);
     }
 
+    public long getLong(final String key) {
+        return getLong(key);
+    }
+    /**
+     * 根据字符串查询long值，非标准查询方法
+     * 直接读取data[]生成long值，不需要从源数组中复制子byte[]
+     * @param key 使用getBytes得到的字节数组，默认使用utf-8编码，支持中文，
+     * @return
+     */
+    public long getLong(final byte[] key) {
+        int valuePos = get(key);
+        return valuePos == -1 ? -1L : ByteUtils.BytesToLong(data, valuePos);
+    }
     /**
      * 二分法查询指定key对应的value
      *
